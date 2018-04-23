@@ -42,7 +42,6 @@ egen childhh = rowtotal(ch007_1 ch007_2 ch007_3 ch007_3 ch007_4 ch007_5 ch007_6 
 label var childhh "Number of children in HH"
 
 use $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_sp.dta, clear
->>>>>>> 941d62a5ddef5131d7dbcd3c5941dc5180dae039:Code wave 6/8.SP_6.do
 
 keep mergeid hhid6 sp009_1 sp009_2 sp009_3 sp011_1 sp011_2 sp011_3 /*
 */ sp029_* sp010d1_* sp029_* sp010d*
