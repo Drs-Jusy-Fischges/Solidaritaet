@@ -12,10 +12,40 @@ capture log close
 * Master Do-File
 do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
 
+<<<<<<< HEAD:Code wave 6/6.SP_6.do
 use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_sp.dta, clear
+=======
+
+use $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_ch.dta, clear
+
+keep mergeid hhid6 ch001_ ch007_1-ch007_8 ch524_-ch525d20
+
+recode ch007_* (1 2 = 1) (-1 3/8 = 0) (-2 = .)
+label def ch007_1 0 "Not in HH" 1 "In HH", replace
+label def ch007_2 0 "Not in HH" 1 "In HH", replace
+label def ch007_3 0 "Not in HH" 1 "In HH", replace
+label def ch007_4 0 "Not in HH" 1 "In HH", replace
+label def ch007_5 0 "Not in HH" 1 "In HH", replace
+label def ch007_6 0 "Not in HH" 1 "In HH", replace
+label def ch007_7 0 "Not in HH" 1 "In HH", replace
+label def ch007_8 0 "Not in HH" 1 "In HH", replace
+label value ch007_1 ch007_1
+label value ch007_2 ch007_2
+label value ch007_3 ch007_3
+label value ch007_4 ch007_4
+label value ch007_5 ch007_5
+label value ch007_6 ch007_6
+label value ch007_7 ch007_7
+label value ch007_8 ch007_8
+
+egen childhh = rowtotal(ch007_1 ch007_2 ch007_3 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8)
+label var childhh "Number of children in HH"
+
+use $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_sp.dta, clear
+>>>>>>> 941d62a5ddef5131d7dbcd3c5941dc5180dae039:Code wave 6/8.SP_6.do
 
 keep mergeid hhid6 sp009_1 sp009_2 sp009_3 sp011_1 sp011_2 sp011_3 /*
-*/ sp029_* sp010d1_*
+*/ sp029_* sp010d1_* sp029_* sp010d*
 
 * Missing kodieren
 do $do\sharetom5.ado
@@ -26,16 +56,48 @@ gen helpout1= sp009_1
 gen helpout2= sp009_2
 gen helpout3= sp009_3
 
-recode helpout* (1=1) (2/7=2) (8/9=3)(23/28=3) (20/22=4) (18/19=.)(29/33=.)(1=0) (10=5) /*
-*/ (11=6) (12=7) (13=8) (14=9) (15=10) (16=11) (17=12)
+recode helpout* (-2 -1 = .) (1/9 = 0) (20/96 = 0) (10 11 = 1)
 
-label def helpout 1 "Given help to spouse" 2 "Given help to parent generation" /*
-*/ 3"Given help to other family member" 
-*/4 "Given help to family of child (laws, gkids)" 5 "Child 1" 6 "Child 2" /*
-*/7 "Child 3" 8 "Child 4" 9 "Child 5" 10 "Child 6" 11 "Child 7" 12 "Child 8" 
-label val helpout* helpout 
+label var helpout1 "Person 1 - Given help to..."
+label var helpout2 "Person 2 - Given help to..."
+label var helpout3 "Person 3 - Given help to..."
+label def helpout1 1 "(Step) child" 0 "Other person"
+label def helpout2 1 "(Step) child" 0 "Other person"
+label def helpout3 1 "(Step) child" 0 "Other person"
+label val helpout1 helpout1
+label val helpout2 helpout2
+label val helpout3 helpout3
 tab helpout2, m
 drop sp009* 
+
+
+********** Exclude personal care children from help variable *********
+gen helpc1 = sp029_1 if sp010d1_1 != 1
+gen helpc2 = sp029_2 if sp010d1_2 != 1
+gen helpc3 = sp029_3 if sp010d1_3 != 1
+
+label var helpc1 "Person 1 - Given help to child (no pc)"
+label var helpc2 "Person 2 - Given help to child (no pc)"
+label var helpc3 "Person 3 - Given help to child (no pc)"
+
+recode helpc* (-1 96 = .)
+drop sp010d1_*
+
+
+********** Frequencies *********
+gen freqc1 = sp011_1 if helpc1 != .
+gen freqc2 = sp011_2 if helpc2 != .
+gen freqc3 = sp011_3 if helpc3 != .
+
+recode freqc* (-2 -1 = .)
+
+label var freqc1 "Person 1 - Frequency of help given to child (no pc)"
+label var freqc2 "Person 2 - Frequency of help given to child (no pc)"
+label var freqc3 "Person 3 - Frequency of help given to child (no pc)"
+
+label value freqc1 howoftensp
+label value freqc2 howoftensp
+label value freqc3 howoftensp
 
 
 ********** Family solidarity **********

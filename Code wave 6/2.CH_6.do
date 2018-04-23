@@ -327,7 +327,7 @@ drop Ch07*
 drop ch006* Kid_* ch015* ch007*
 
 ***
-* wir wissen hier nicht wer einzelkind ist und bei wem einfach keine gewschwister zuhause wohnen!!!
+* wir wissen hier nicht wer einzelkind ist und bei wem einfach keine geschwister zuhause wohnen!!!
 ***
 
 *** Ehestatus Kind
