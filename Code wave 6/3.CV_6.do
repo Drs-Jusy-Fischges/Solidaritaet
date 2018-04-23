@@ -10,9 +10,9 @@ capture log close
 
 
 * Master Do-File
-do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\Master.do"
+do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
 
-use $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_cv_r.dta, clear
+use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_cv_r.dta, clear
 
 keep mergeid hhsize hhid6 cvresp relrpers deceased
 

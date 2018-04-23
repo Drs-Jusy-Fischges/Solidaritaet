@@ -10,19 +10,19 @@ capture log close
 
 
 * Master Do-File
-do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\Master.do"
+do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
 
 // Personenebene
-do $do\DM_6.do
-do $do\ISCED_6.do 
-do $do\CH_6.do
+do $do\4.DM_6.do
+do $do\5.ISCED_6.do 
+do $do\2.CH_6.do
 
 // dazu für Partner in HH, HH-Größe
-do $do\CV_6.do
+do $do\3.CV_6.do
 
 // Haushaltsebene
-do $do\SP_6.do
-do $do\INC_6.do
+*do $do\6.SP_6.do
+do $do\7.INC_6.do
 
 * Zusammenfassen
 use $out\Demographics_IND.dta
@@ -38,7 +38,7 @@ drop dup
 
 * Auf Haushaltsebene umstrukturieren (so, dass Elterninfos in gleichem Spell)
 * 1= Väter, 2=Mütter
-sort hhid6 mergeid
+*sort hhid6 mergeid
 *drop mergeid mergeidp6 coupleid6 omacoh
 *reshape wide alter migr fborn fcit isced_p casp subges Emar int_year hosnight, i(hhid6) j(eltern)
 
@@ -50,9 +50,9 @@ reshape wide alter migr fborn fcit isced_p Emar int_year, i(hhid6) j(eltern)
 
 
 * Support dazu
-merge 1:1 hhid6 using $out\Support.dta, gen(supp_m)
-drop if supp_m==2
-drop supp_m
+*merge 1:1 hhid6 using $out\Support.dta, gen(supp_m)
+*drop if supp_m==2
+*drop supp_m
 
 * Employment and Pensions 
 merge 1:1 hhid6 using $out\Income.dta, gen(m_ep)

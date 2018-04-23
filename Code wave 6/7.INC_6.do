@@ -9,12 +9,12 @@ set linesize 80
 capture log close
 
 * Master Do-File
-do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\Master.do"
+do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
 
 /* Ziel: Info über Kinder: Wohnort, Beziehungsstatus, 
 Ausbildungs- & Erwerbsstatus, Beziehung mit Eltern, letzter Auszug */
 
-use $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_ep.dta, clear
+use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_ep.dta, clear
 keep hhid6 mergeid  ep205e ep207e ep678e
 
 * Missing kodieren

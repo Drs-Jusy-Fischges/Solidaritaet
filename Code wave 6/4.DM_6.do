@@ -10,10 +10,37 @@ capture log close
 
 
 * Master Do-File
-do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\Master.do"
+do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
 
-* jetzt DN Datnesatz aufmachen
-use $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_dn.dta, clear
+* Imputationsdatensatz aufmachen
+use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_gv_imputations.dta, clear
+
+* nur Ehe behalten
+keep mergeid mstat implicat
+
+* Datensatz umformen
+reshape wide mstat,j(implicat) i(mergeid)
+
+* Modus über 5 Variablen berechnen
+
+gen foo = . 
+gen mode = . 
+
+qui forval i = 1/`=_N' { 
+	forval j = 1/5 { 
+		replace foo = mstat`j'[`i'] in `j' 
+	} 
+	egen bar = mode(foo) in 1/5 
+	replace mode = bar[1] in `i' 
+	drop bar 
+} 
+*
+
+saveold $out\imp_mstat.dta, replace  
+
+
+* jetzt DN Datensatz aufmachen
+use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_dn.dta, clear
 
 keep mergeid hhid6 country mergeidp coupleid6 dn003 dn004_ dn007_ dn044_ dn042_
 
@@ -24,7 +51,7 @@ numlabel _all, add
 sort mergeid
 
 * Interviewjahr dranmatchen
-merge 1:1 mergeid using $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_cv_r.dta, /*
+merge 1:1 mergeid using $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_cv_r.dta, /*
 */ keepusing(mergeid int_year) gen(m_gen)
 drop if m_gen==2
 drop m_gen
@@ -49,6 +76,7 @@ drop Gebj
 
 *
 *hier fehlen noch die die sich nicht geändert haben aus den anderen wellen 
+* wie unten aus Imputation holen, dass man nicht alle welle angucken braucht
 *
 
 gen migr= dn004_
@@ -78,8 +106,8 @@ tab fcit, m
 drop dn004_ dn007_ 
 
 *** Marital status
-* Marital status dranmatchen aus IMputation (sonst muss man es aus allen Wellen zusammensuchen)
-merge 1:1 mergeid using $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_gv_imputations.dta, /*
+* Marital status dranmatchen aus Imputation (sonst muss man es aus allen Wellen zusammensuchen)
+merge 1:1 mergeid using $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_gv_imputations.dta, /*
 */ keepusing(mergeid mstat) gen(m_imp)
 drop m_imp
 

@@ -10,9 +10,9 @@ capture log close
 
 
 * Master Do-File
-do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\Master.do"
+do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
 
-use $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_sp.dta, clear
+use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_sp.dta, clear
 
 keep mergeid hhid6 sp009_1 sp009_2 sp009_3 sp011_1 sp011_2 sp011_3 /*
 */ sp029_* sp010d1_*
@@ -128,7 +128,7 @@ keep if dup==0
 drop dup
 
 * drop vor umstrukturieren (Var noch nicht rekodiert- noch in Rohform, Liste sollte später leer sein)
-drop sp011* sp020* sp021* helpout* helpc* 
+drop sp011* helpout* helpc* 
 
 
 * Umstrukturieren, so dass Infos beider Partner in einer Zeile (1=Mann, 2=Frau)

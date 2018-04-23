@@ -9,7 +9,7 @@ set linesize 80
 capture log close
 
 * Master Do-File
-do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\Master.do"
+do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
 
 * LOG-Datei
 capture log close
@@ -18,20 +18,20 @@ log using $log\Children6.log, replace
 /* Ziel: Info über Kinder: Wohnort, Beziehungsstatus, 
 Ausbildungs- & Erwerbsstatus, Beziehung mit Eltern, letzter Auszug */
 
-use $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_ch.dta, clear
+use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_ch.dta, clear
 sort mergeid
 keep mergeid coupleid6 hhid6 ch001_ ch005_1-ch005_8  ch006_1-ch006_8 /*
 */ ch007_1-ch007_8 ch012_1-ch012_8 ch013_1-ch013_8 /*
 */ ch014_1-ch014_8 ch015_1-ch015_8 ch016_1-ch016_8 ch019_1-ch019_8 /*
 */ ch102_1-ch102_8 ch103_1-ch103_8 ch104_1-ch104_8 ch105_1-ch105_8 ch106_1-ch106_8 /*
-*/ ch107_1-ch107_8 ch108_1-ch108_8 ch303d1-ch303d8
+*/ ch107_1-ch107_8 ch108_1-ch108_8 ch303d1-ch303d8 ch302_
 
 * Missing kodieren
 do $do\sharetom5.ado
 numlabel _all, add
 
 *** Family respondent, Land & Interviewjahr dranmatchen 
-merge 1:1 mergeid using $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_cv_r.dta, /*
+merge 1:1 mergeid using $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_cv_r.dta, /*
 */ keepusing(mergeid fam_resp country int_year) gen(m_gen)
 drop m_gen
 
@@ -61,21 +61,21 @@ tab nKind, m
 drop if nKind >8
 
 * wie viele Kinder pro Haushalt leben zu hause?
-*clonevar var1=ch007_1
-*clonevar var2=ch007_2
-*clonevar var3=ch007_3
-*clonevar var4=ch007_4
-*clonevar var5=ch007_5
-*clonevar var6=ch007_6
-*clonevar var7=ch007_7
-*clonevar var8=ch007_8
+clonevar var1=ch007_1
+clonevar var2=ch007_2
+clonevar var3=ch007_3
+clonevar var4=ch007_4
+clonevar var5=ch007_5
+clonevar var6=ch007_6
+clonevar var7=ch007_7
+clonevar var8=ch007_8
 
-*recode var* (1/2=1) (3/9=0) (-2/-1=.)
-*label def var 1  "child lives with parents" 0 "child doesnt live with parents"
-*label val var* var
+recode var* (1/2=1) (3/9=0) (-2/-1=.)
+label def var 1  "child lives with parents" 0 "child doesnt live with parents"
+label val var* var
 
-*gen nkidshome= var1 + var2 + var3 + var4 + var5 + var6 + var7 + var8
-*drop var*
+gen nkidshome= var1 + var2 + var3 + var4 + var5 + var6 + var7 + var8
+drop var*
 
 * Doppelte Fälle raus
 sort hhid6
@@ -344,7 +344,7 @@ replace Kmar=ch012_8 if Kspell==8
 recode Kmar (-2/-1=.)
 label var Kmar "Marriage status Kind"
 label define Kmar 1"Married, living with spouse" 2"Registered partnership" /*
-*/ 3"Married, living seperated" 4"never married" 5"divorced" 6"widowed"
+*/ 3"Married, living seperated" 4"never married" 5"divorced" 6"widowed" 7"not married, partner", replace
 label val Kmar Kmar
 tab Kmar, m
 drop ch012*
@@ -352,7 +352,6 @@ drop ch012*
 *** Partnerstatus Kind
 
 ***
-* hier noch die Dazu von Marital status!!! 
 ***
 ***
 ***
@@ -373,6 +372,9 @@ label val Kpar Kpar
 tab Kpar, m
 drop ch013*
 
+replace Kmar=7 if Kpar==1
+lab val Kmar Kmar
+drop Kpar
 
 *** Kinderzahl Kind
 gen Kkind=0
@@ -397,12 +399,11 @@ drop ch019*
 
 *** Wie wohnt Kind?
 
-*** Spouse und Parner zusammen!!!!
 ***
 
 gen Kliving=0
 replace Kliving=4 if Kcohab==0 
-replace Kliving=3 if Kpar==1
+replace Kliving=3 if Kmar==7
 replace Kliving=2 if Kmar==1
 replace Kliving=1 if Kcohab==1 
 
@@ -517,11 +518,9 @@ label val Kop Kop
 ***
 ***
 ***
-***
-* Geht nicht so!!!
 
 gen parstatus=.
-* Natural child of current relationship
+* Natural child of one/ both parents
 replace parstatus=1 if ch303d1==1 & Kspell==1
 replace parstatus=1 if ch303d2==1 & Kspell==2
 replace parstatus=1 if ch303d3==1 & Kspell==3
@@ -531,28 +530,30 @@ replace parstatus=1 if ch303d6==1 & Kspell==6
 replace parstatus=1 if ch303d7==1 & Kspell==7
 replace parstatus=1 if ch303d8==1 & Kspell==8
 
+replace parstatus=1 if ch302_==1
+
 * Natural child one partner but not other
-replace parstatus=2 if (ch104_1==1 | ch105_1==1) & Kspell==1 
-replace parstatus=2 if (ch104_2==1 | ch105_2==1) & Kspell==2 
-replace parstatus=2 if (ch104_3==1 | ch105_3==1) & Kspell==3 
-replace parstatus=2 if (ch104_4==1 | ch105_4==1) & Kspell==4 
-replace parstatus=2 if (ch104_5==1 | ch105_5==1) & Kspell==5 
-replace parstatus=2 if (ch104_6==1 | ch105_6==1) & Kspell==6 
-replace parstatus=2 if (ch104_7==1 | ch105_7==1) & Kspell==7 
-replace parstatus=2 if (ch104_8==1 | ch105_8==1) & Kspell==8 
+replace parstatus=1 if (ch104_1==1 | ch105_1==1) & Kspell==1 
+replace parstatus=1 if (ch104_2==1 | ch105_2==1) & Kspell==2 
+replace parstatus=1 if (ch104_3==1 | ch105_3==1) & Kspell==3 
+replace parstatus=1 if (ch104_4==1 | ch105_4==1) & Kspell==4 
+replace parstatus=1 if (ch104_5==1 | ch105_5==1) & Kspell==5 
+replace parstatus=1 if (ch104_6==1 | ch105_6==1) & Kspell==6 
+replace parstatus=1 if (ch104_7==1 | ch105_7==1) & Kspell==7 
+replace parstatus=1 if (ch104_8==1 | ch105_8==1) & Kspell==8 
 
 * Foster/ Adoptive child of one or both 
-replace parstatus=3 if (ch106_1==1 | ch107_1==1 | ch108_1==1)& Kspell==1
-replace parstatus=3 if (ch106_2==1 | ch107_2==1 | ch108_2==1)& Kspell==2
-replace parstatus=3 if (ch106_3==1 | ch107_3==1 | ch108_3==1)& Kspell==3
-replace parstatus=3 if (ch106_4==1 | ch107_4==1 | ch108_4==1)& Kspell==4
-replace parstatus=3 if (ch106_5==1 | ch107_5==1 | ch108_5==1)& Kspell==5
-replace parstatus=3 if (ch106_6==1 | ch107_6==1 | ch108_6==1)& Kspell==6
-replace parstatus=3 if (ch106_7==1 | ch107_7==1 | ch108_7==1)& Kspell==7
-replace parstatus=3 if (ch106_8==1 | ch107_8==1 | ch108_8==1)& Kspell==8
+replace parstatus=2 if (ch106_1==1 | ch107_1==1 | ch108_1==1)& Kspell==1
+replace parstatus=2 if (ch106_2==1 | ch107_2==1 | ch108_2==1)& Kspell==2
+replace parstatus=2 if (ch106_3==1 | ch107_3==1 | ch108_3==1)& Kspell==3
+replace parstatus=2 if (ch106_4==1 | ch107_4==1 | ch108_4==1)& Kspell==4
+replace parstatus=2 if (ch106_5==1 | ch107_5==1 | ch108_5==1)& Kspell==5
+replace parstatus=2 if (ch106_6==1 | ch107_6==1 | ch108_6==1)& Kspell==6
+replace parstatus=2 if (ch106_7==1 | ch107_7==1 | ch108_7==1)& Kspell==7
+replace parstatus=2 if (ch106_8==1 | ch107_8==1 | ch108_8==1)& Kspell==8
 
 
-label def parstatus 1 "child of both parents" 2 "child of one parent" 3"Foster/ adoptive child"
+label def parstatus 1 "child of one/both parents" 2 "Foster/ adoptive child", replace
 label val parstatus parstatus
 label var parstatus "Parentship status"
 tab parstatus, m

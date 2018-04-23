@@ -10,11 +10,11 @@ capture log close
 
 
 * Master Do-File
-do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\Master.do"
+do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
 
 
 *** Isced Eltern
-use $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_gv_isced.dta, clear
+use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_gv_isced.dta, clear
 
 keep mergeid hhid6 isced1997_r 
 
@@ -32,13 +32,13 @@ saveold $out\Isced_par.dta, replace
 
 
 *** Children
-use $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_gv_isced.dta, clear
+use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_gv_isced.dta, clear
 
 keep hhid6 mergeid isced1997_c1 isced1997_c2 isced1997_c3 /*
 */ isced1997_c4 isced1997_c5 isced1997_c6 isced1997_c7 isced1997_c8
 
 *** Family respondent dranmatchen 
-merge 1:1 mergeid using $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_cv_r.dta, /*
+merge 1:1 mergeid using $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_cv_r.dta, /*
 */ keepusing(mergeid fam_resp country int_year) gen(m_gen)
 drop m_gen
 
