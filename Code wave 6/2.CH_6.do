@@ -9,7 +9,8 @@ set linesize 80
 capture log close
 
 * Master Do-File
-do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
+*do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
+do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Code wave 6\1.Master.do"
 
 * LOG-Datei
 capture log close
