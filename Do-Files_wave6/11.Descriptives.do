@@ -2,15 +2,15 @@
 ******* Descriptives *******
 *********************
 
-version 14
+version 13
 clear all
 set more off, perm
 set linesize 80
 capture log close
 
 * Master Do-File
-* do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods\Do-Files\Master.do"
-do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
+do "C:\Users\Julia\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
+*do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
 
 * LOG-Datei
 capture log close

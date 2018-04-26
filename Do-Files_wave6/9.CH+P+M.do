@@ -2,7 +2,7 @@
 ******* Datenmanagement ********
 ** Children und Eltern mergen **
 
-version 14
+version 13
 clear all
 set more off, perm
 set linesize 80
@@ -10,8 +10,8 @@ capture log close
 
 
 * Master Do-File
-/* do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\Master.do" */
-do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
+do "C:\Users\Julia\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do" 
+*do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
 
 * LOG-Datei
 capture log close
@@ -95,7 +95,7 @@ drop fam_resp
 *******************
 *** Fallauswahl
 *******************
-drop if Kalter < 20 | Kalter > 39 // nur Kinder 20-39 behalten
+drop if Kalter < 20 | Kalter > 35 // nur Kinder 20-35 behalten
 drop if parstatus !=1 // nur leibliche Kinder behalten
 drop parstatus
 drop if Kcohab==. // keine Info Wohnort

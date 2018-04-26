@@ -2,7 +2,7 @@
 ******* Datenmanagement *******
 ********** Parents ************
 
-version 14
+version 13
 clear all
 set more off, perm
 set linesize 80
@@ -10,8 +10,8 @@ capture log close
 
 
 * Master Do-File
-* do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
-do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
+do "C:\Users\Julia\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
+*do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
 
 // Personenebene
 do $do\4.DM_6.do
@@ -39,21 +39,16 @@ drop dup
 
 * Auf Haushaltsebene umstrukturieren (so, dass Elterninfos in gleichem Spell)
 * 1= Väter, 2=Mütter
-*sort hhid6 mergeid
-*drop mergeid mergeidp6 coupleid6 omacoh
-*reshape wide alter migr fborn fcit isced_p casp subges Emar int_year hosnight, i(hhid6) j(eltern)
+sort hhid6 mergeid
+drop mergeid mergeidp6 coupleid6 _merge dn004_ dn007_ dn040_
+reshape wide alter migr cit birth isced_p Emar int_year partnerinhh, i(hhid6) j(eltern)
 
-* hier neu nur für poster
-drop mergeid mergeidp6 coupleid6 dn044_
-reshape wide alter migr fborn fcit isced_p Emar int_year, i(hhid6) j(eltern)
-
-* ende neu
 
 
 * Support dazu
-*merge 1:1 hhid6 using $out\Support.dta, gen(supp_m)
-*drop if supp_m==2
-*drop supp_m
+merge 1:1 hhid6 using $out\Support.dta, gen(supp_m)
+drop if supp_m==2
+drop supp_m
 
 * Employment and Pensions 
 merge 1:1 hhid6 using $out\Income.dta, gen(m_ep)
@@ -128,35 +123,7 @@ tab xisced
 label var isced_p1 "Educational level father"
 
 * Migrationsstatus
-// Zusammengefasst
-gen migration=.
-replace migration=0 if migr1==0 | migr2==0
-replace migration=1 if migr1==1 | migr2==1
-recode migration (.=2)
-label var migration "Parents have migrational background"
-label def migr 0 "both passport of country of interview & born there" 1 "born somewhere else/ passport of other nation" 2"no information", replace
-label val migration migr
-tab migration, m
-drop migr1 migr2
-
-// Einzeln 
-gen fborn=.
-replace fborn=0 if fborn1==0 | fborn2==0
-replace fborn=1 if fborn1==1 | fborn2==1
-recode fborn(.=2)
-label var fborn "Parent(s) born in another country"
-label val fborn fborn
-tab fborn, m
-
-gen fcit=.
-replace fcit=0 if fcit1==0 | fcit2==0
-replace fcit=1 if fcit1==1 | fcit2==1
-recode fcit (.=2)
-label var fcit "Parent(s) hold citizenship of another country"
-label val fcit fcit
-tab fcit, m
-
-drop fborn1 fborn2 fcit1 fcit2
+* migr birth cit je 1 &2 
 
 
 * Einkommen Eltern
