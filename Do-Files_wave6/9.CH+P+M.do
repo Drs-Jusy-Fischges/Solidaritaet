@@ -2,7 +2,7 @@
 ******* Datenmanagement ********
 ** Children und Eltern mergen **
 
-version 13
+version 14
 clear all
 set more off, perm
 set linesize 80
@@ -10,15 +10,16 @@ capture log close
 
 
 * Master Do-File
-do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\Master.do"
+/* do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\Master.do" */
+do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
 
 * LOG-Datei
 capture log close
 log using $log\Parents.log, replace
 
-do $do\Eltern_6-nichtfertig.do
+do $do\8.Eltern_6-nichtfertig.do
 
-do $do\Macro.do
+*do $do\10.Macro.do // falsche Jahre
 
 use $out\children6.dta, clear
 
@@ -60,7 +61,7 @@ tab octime, m
 *replace Kcohab=0 if Kwohn==3 | Kwohn==4 | Kwohn==5
 *tab Kcohab, m
 
-*** Variable für andere Kinder zuhause
+*** Variable fÃ¼r andere Kinder zuhause
 // egal welches Alter
 *tab Khome
 *gen chilhome=Khome

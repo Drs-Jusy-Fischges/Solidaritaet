@@ -2,22 +2,23 @@
 ******* Descriptives *******
 *********************
 
-version 13
+version 14
 clear all
 set more off, perm
 set linesize 80
 capture log close
 
 * Master Do-File
-do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods\Do-Files\Master.do"
+* do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods\Do-Files\Master.do"
+do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
 
 * LOG-Datei
 capture log close
 log using $log\Descriptives.log, replace
 
-use $SHARE\sharew5_rel6-0-0_ALL_datasets_stata\sharew5_rel6-0-0_gv_weights.dta, clear
+use $SHARE\sharew5_rel6-1-0_ALL_datasets_stata\sharew5_rel6-1-0_gv_weights.dta, clear
 
-// Doppelte Fälle raus
+// Doppelte FÃ¤lle raus
 sort hhid5
 quietly by hhid5: gen dup= cond(_N==1,0,_n)
 tab dup
@@ -30,7 +31,7 @@ saveold $out\weights.dta, replace
 ***********************************
 ***********************************
 
-do $do\CH+P+M.do
+do $do\9.CH+P+M.do
 
 use $out\sample.dta, clear
 

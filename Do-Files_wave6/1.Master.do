@@ -1,5 +1,5 @@
 ***************************************
-**** Master Do-File Julia Büschges ****
+**** Master Do-File Julia BÃ¼schges ****
 ***************************************
 
 *** Default settings
@@ -21,7 +21,7 @@ global log "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarb
 global SHARE "C:\Users\Isy\Desktop\Paper_mit_Julia\Julia_Master\SHARE"          // Orignaldatensatz
 global out "C:\Users\Isy\Desktop\Paper_mit_Julia\Julia_Master\Out"	         // bearbeiteter Datensatz
 global results "C:\Users\Isy\Desktop\Paper_mit_Julia\Julia_Master\Results"  // Ergebnisse
-global do "C:\Users\Isy\Desktop\Paper_mit_Julia\Julia_Master\Do-Files"		 // Do-File
+global do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6"		 // Do-File
 global log "C:\Users\Isy\Desktop\Paper_mit_Julia\Julia_Master\Log-Files"    // Log-File 
 
 

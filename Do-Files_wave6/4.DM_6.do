@@ -2,7 +2,7 @@
 ******* Datenmanagement *******
 ******** Demographics *********
 
-version 13
+version 14
 clear all
 set more off, perm
 set linesize 80
@@ -10,9 +10,10 @@ capture log close
 
 
 * Master Do-File
-do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
+* do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
+do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
 
-/*
+
 * Imputationsdatensatz aufmachen
 use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_gv_imputations.dta, clear
 
@@ -22,7 +23,7 @@ keep mergeid mstat implicat
 * Datensatz umformen
 reshape wide mstat,j(implicat) i(mergeid)
 
-* Modus über 5 Variablen berechnen
+/* Modus Ã¼ber 5 Variablen berechnen
 
 gen foo = . 
 gen mode = . 
@@ -64,7 +65,7 @@ merge 1:1 mergeid using $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-
 drop if m_gen==2
 drop m_gen
 
-*** Väter & Mütter identifizieren
+*** VÃ¤ter & MÃ¼tter identifizieren
 gen eltern=dn042_
 drop dn042_
 label var eltern "Elternteil"

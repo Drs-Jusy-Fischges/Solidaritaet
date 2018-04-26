@@ -2,7 +2,7 @@
 ******* Datenmanagement *******
 ********** Support ************
 
-version 13
+version 14
 clear all
 set more off, perm
 set linesize 80
@@ -10,13 +10,11 @@ capture log close
 
 
 * Master Do-File
-do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
+*do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
+do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
 
-<<<<<<< HEAD:Code wave 6/6.SP_6.do
-use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_sp.dta, clear
-=======
-
-use $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_ch.dta, clear
+/*
+use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_ch.dta, clear
 
 keep mergeid hhid6 ch001_ ch007_1-ch007_8 ch524_-ch525d20
 
@@ -41,7 +39,9 @@ label value ch007_8 ch007_8
 egen childhh = rowtotal(ch007_1 ch007_2 ch007_3 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8)
 label var childhh "Number of children in HH"
 
-use $SHARE\sharew6_rel6-0-0_ALL_datasets_stata/sharew6_rel6-0-0_sp.dta, clear
+
+
+use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_sp.dta, clear
 
 keep mergeid hhid6 sp009_1 sp009_2 sp009_3 sp011_1 sp011_2 sp011_3 /*
 */ sp029_* sp010d1_* sp029_* sp010d*
@@ -106,7 +106,7 @@ gen helpc2=helpout2
 gen helpc3=helpout3
 recode helpc* (1/4=0)(-1 -2=0)(5/12=1) (.=0) // nur Kinder haben Werte, sonst 0
 
-// vorläufige Version nur wie vielen, nicht wie oft
+// vorlÃ¤ufige Version nur wie vielen, nicht wie oft
 egen helpanteil= rowtotal(helpc1 helpc2 helpc3)
 
 
@@ -201,7 +201,7 @@ reshape wide helpanteil, i(hhid6) j(eltern)
 *recode ch* (.=0)
 *recode c1* c2* c3* c4* c5* c6* c7* c8* (.=0)
 
-// nächste Schritte für time vars: in Kinderformat jew. Kind abziehen
+// nÃ¤chste Schritte fÃ¼r time vars: in Kinderformat jew. Kind abziehen
 // Eltern addieren
 // durch Zahl der Kinder teilen
 

@@ -2,7 +2,7 @@
 ******* Datenmanagement *******
 ********** Children ***********
 
-version 13
+version 14
 clear all
 set more off, perm
 set linesize 80
@@ -10,353 +10,229 @@ capture log close
 
 * Master Do-File
 *do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
-do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Code wave 6\1.Master.do"
+do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
 
 * LOG-Datei
 capture log close
 log using $log\Children6.log, replace
 
-/* Ziel: Info über Kinder: Wohnort, Beziehungsstatus, 
+/* Ziel: Info Ã¼ber Kinder: Wohnort, Beziehungsstatus, 
 Ausbildungs- & Erwerbsstatus, Beziehung mit Eltern, letzter Auszug */
 
-*** Wohnort aus allen Wellen (sonst nur Veränderung)
+*** Wohnort aus allen Wellen (sonst nur VerÃ¤nderung)
 * Variablen umbenennen
 use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_ch.dta, clear
-keep mergeid ch001_ ch007_1 ch007_2 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8
+keep mergeid ch001_ ch007_1 ch007_2 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8 ch505_1-ch505_20  ch006_1-ch006_8
 rename (ch007_1 ch007_2 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8) (wohn61 wohn62 wohn63 wohn64 wohn65 wohn66 wohn67 wohn68)
 saveold $out\wohnort.dta, replace  
 
 use $SHARE\sharew5_rel6-1-0_ALL_datasets_stata/sharew5_rel6-1-0_ch.dta, clear
-keep mergeid ch007_1 ch007_2 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8
-rename (ch007_1 ch007_2 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8) (wohn51 wohn52 wohn53 wohn54 wohn55 wohn56 wohn57 wohn58)
+keep mergeid ch007_1 ch007_2 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8 ch505_1 ch006_1-ch006_8
+rename (ch007_1 ch007_2 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8 ch006_1 ch006_2 ch006_3 ch006_4 ch006_5 ch006_6 ch006_7 ch006_8) /*
+*/ (wohn51 wohn52 wohn53 wohn54 wohn55 wohn56 wohn57 wohn58 year1 year2 year3 year4 year5 year6 year7 year8)
 saveold $out\wohn_5.dta, replace  
 
-use $SHARE\sharew4_rel6-1-0_ALL_datasets_stata/sharew4_rel6-1-0_ch.dta, clear
-keep mergeid ch007_1 ch007_2 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8
-rename (ch007_1 ch007_2 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8) (wohn41 wohn42 wohn43 wohn44 wohn45 wohn46 wohn47 wohn48)
-saveold $out\wohn_4.dta, replace  
 
-use $SHARE\sharew2_rel6-1-0_ALL_datasets_stata/sharew2_rel6-1-0_ch.dta, clear
-keep mergeid ch007_1 ch007_2 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8
-rename (ch007_1 ch007_2 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8) (wohn21 wohn22 wohn23 wohn24 wohn25 wohn26 wohn27 wohn28)
-saveold $out\wohn_2.dta, replace  
-
-use $SHARE\sharew1_rel6-1-0_ALL_datasets_stata/sharew1_rel6-1-0_ch.dta, clear
-keep mergeid ch007_1 ch007_2 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8
-rename (ch007_1 ch007_2 ch007_3 ch007_4 ch007_5 ch007_6 ch007_7 ch007_8) (wohn11 wohn12 wohn13 wohn14 wohn15 wohn16 wohn17 wohn18)
-saveold $out\wohn_1.dta, replace  
 
 use $out\wohnort.dta, clear
 merge 1:1 mergeid using $out\wohn_5.dta, gen(mer5)
-merge 1:1 mergeid using $out\wohn_4.dta, gen(mer4)
-merge 1:1 mergeid using $out\wohn_2.dta, gen(mer2)
-merge 1:1 mergeid using $out\wohn_1.dta, gen(mer1)
+drop if mer5 != 3
+drop mer5
+
+recode ch001_ (. = 0) (-2 -1 = .)
+drop if ch001_ > 8
+drop if ch001_ == 0
+
+
+* Zuordnen der Kinder in Welle 5 zu Welle 6
+* Child 1
+gen wave5to6_c1 = .
+replace wave5to6_c1 = 2 if year1 != ch006_1
+replace wave5to6_c1 = 0 if year1 == .
+replace wave5to6_c1 = 1 if year1 == ch006_1
+replace wave5to6_c1 = 3 if ch006_1 == .
+label var wave5to6_c1 "Info transmission child 1"
+label def wave5to6_c1 0 "Item nonresponse wave 5" 1 "Same info" 2 "Different info" 3 "Item nonresponse wave 6"
+label value wave5to6_c1 wave5to6_c1
+
+* Child 2
+gen wave5to6_c2 = .
+replace wave5to6_c2 = 2 if year2 != ch006_2
+replace wave5to6_c2 = 0 if year2 == .
+replace wave5to6_c2 = 1 if year2 == ch006_2
+replace wave5to6_c2 = 3 if ch006_2 == .
+replace wave5to6_c2 = . if ch001_ < 2
+label var wave5to6_c2 "Info transmission child 2"
+label def wave5to6_c2 0 "Item nonresponse wave 5" 1 "Same info" 2 "Different info" 3 "Item nonresponse wave 6" .a "No such child", replace
+label value wave5to6_c2 wave5to6_c2
+
+* Child 3
+gen wave5to6_c3 = .
+replace wave5to6_c3 = 2 if year3 != ch006_3
+replace wave5to6_c3 = 0 if year3 == .
+replace wave5to6_c3 = 1 if year3 == ch006_3
+replace wave5to6_c3 = 3 if ch006_3 == .
+replace wave5to6_c3 = . if ch001_ < 3
+label var wave5to6_c3 "Info transmission child 3"
+label def wave5to6_c3 0 "Item nonresponse wave 5" 1 "Same info" 2 "Different info" 3 "Item nonresponse wave 6" .a "No such child", replace
+label value wave5to6_c3 wave5to6_c3
+
+* Child 4
+gen wave5to6_c4 = .
+replace wave5to6_c4 = 2 if year4 != ch006_4
+replace wave5to6_c4 = 0 if year4 == .
+replace wave5to6_c4 = 1 if year4 == ch006_4
+replace wave5to6_c4 = 3 if ch006_4 == .
+replace wave5to6_c4 = . if ch001_ < 4
+label var wave5to6_c4 "Info transmission child 4"
+label def wave5to6_c4 0 "Item nonresponse wave 5" 1 "Same info" 2 "Different info" 3 "Item nonresponse wave 6" .a "No such child", replace
+label value wave5to6_c4 wave5to6_c4
+
+* Child 5
+gen wave5to6_c5 = .
+replace wave5to6_c5 = 2 if year5 != ch006_5
+replace wave5to6_c5 = 0 if year5 == .
+replace wave5to6_c5 = 1 if year5 == ch006_5
+replace wave5to6_c5 = 3 if ch006_5 == .
+replace wave5to6_c5 = . if ch001_ < 5
+label var wave5to6_c5 "Info transmission child 5"
+label def wave5to6_c5 0 "Item nonresponse wave 5" 1 "Same info" 2 "Different info" 3 "Item nonresponse wave 6" .a "No such child", replace
+label value wave5to6_c5 wave5to6_c5
+
+* Child 6
+gen wave5to6_c6 = .
+replace wave5to6_c6 = 2 if year6 != ch006_6
+replace wave5to6_c6 = 0 if year6 == .
+replace wave5to6_c6 = 1 if year6 == ch006_6
+replace wave5to6_c6 = 3 if ch006_6 == .
+replace wave5to6_c6 = . if ch001_ < 6
+label var wave5to6_c6 "Info transmission child 6"
+label def wave5to6_c6 0 "Item nonresponse wave 5" 1 "Same info" 2 "Different info" 3 "Item nonresponse wave 6" .a "No such child", replace
+label value wave5to6_c6 wave5to6_c6
+
+* Child 7
+gen wave5to6_c7 = .
+replace wave5to6_c7 = 2 if year7 != ch006_7
+replace wave5to6_c7 = 0 if year7 == .
+replace wave5to6_c7 = 1 if year7 == ch006_7
+replace wave5to6_c7 = 3 if ch006_7 == .
+replace wave5to6_c7 = . if ch001_ < 7
+label var wave5to6_c7 "Info transmission child 7"
+label def wave5to6_c7 0 "Item nonresponse wave 5" 1 "Same info" 2 "Different info" 3 "Item nonresponse wave 6" .a "No such child", replace
+label value wave5to6_c7 wave5to6_c7
+
+* Child 8
+gen wave5to6_c8 = .
+replace wave5to6_c8 = 2 if year8 != ch006_8
+replace wave5to6_c8 = 0 if year8 == .
+replace wave5to6_c8 = 1 if year8 == ch006_8
+replace wave5to6_c8 = 3 if ch006_8 == .
+replace wave5to6_c8 = . if ch001_ < 8
+label var wave5to6_c8 "Info transmission child 8"
+label def wave5to6_c8 0 "Item nonresponse wave 5" 1 "Same info" 2 "Different info" 3 "Item nonresponse wave 6" .a "No such child", replace
+label value wave5to6_c8 wave5to6_c8
 
 recode wohn* (1/2=1) (3/9=0) (-2/-1=.)
 
-* Variable zu letzter Info
+* Variable zu Info Jahr 5
 * Kind 1
 gen wohnc1=.
-replace wohnc1= wohn11 if wohn11!=. 
-replace wohnc1= wohn21 if wohn21!=.
-replace wohnc1= wohn41 if wohn41!=.
-replace wohnc1= wohn51 if wohn51!=.
-replace wohnc1= wohn61 if wohn61!=.
-
+replace wohnc1= wohn51 if wohn51!=. & wave5to6_c1 == 1
 lab def wohnc1 0"No" 1"Yes"
-lab var wohnc1 "Child 1: Currently living at parents` home"
+lab var wohnc1 "Child 1: Living at parents` home"
 lab val wohnc1 wohnc1
 tab wohnc1, m
 
 * Kind 2
 gen wohnc2=.
-replace wohnc2= wohn12 if wohn12!=. 
-replace wohnc2= wohn22 if wohn22!=.
-replace wohnc2= wohn42 if wohn42!=.
-replace wohnc2= wohn52 if wohn52!=.
-replace wohnc2= wohn62 if wohn62!=.
-
+replace wohnc2= wohn52 if wohn52!=. & wave5to6_c2 == 1
 lab def wohnc2 0"No" 1"Yes"
-lab var wohnc2 "Child 2: Currently living at parents` home"
+lab var wohnc2 "Child 2: Living at parents` home"
 lab val wohnc2 wohnc2
 
 * Kind 3
 gen wohnc3=.
-replace wohnc3= wohn13 if wohn13!=. 
-replace wohnc3= wohn23 if wohn23!=.
-replace wohnc3= wohn43 if wohn43!=.
-replace wohnc3= wohn53 if wohn53!=.
-replace wohnc3= wohn63 if wohn63!=.
-
+replace wohnc3= wohn53 if wohn53!=. & wave5to6_c3 == 1
 lab def wohnc3 0"No" 1"Yes"
-lab var wohnc3 "Child 3: Currently living at parents` home"
+lab var wohnc3 "Child 3: Living at parents` home"
 lab val wohnc3 wohnc3
 
 * Kind 4
 gen wohnc4=.
-replace wohnc4= wohn14 if wohn14!=. 
-replace wohnc4= wohn24 if wohn24!=.
-replace wohnc4= wohn44 if wohn44!=.
-replace wohnc4= wohn54 if wohn54!=.
-replace wohnc4= wohn64 if wohn64!=.
-
+replace wohnc4= wohn54 if wohn54!=. & wave5to6_c4 == 1
 lab def wohnc4 0"No" 1"Yes"
-lab var wohnc4 "Child 4: Currently living at parents` home"
+lab var wohnc4 "Child 4: Living at parents` home"
 lab val wohnc4 wohnc4
 tab wohnc4, m
 
 * Kind 5
 gen wohnc5=.
-replace wohnc5= wohn15 if wohn15!=. 
-replace wohnc5= wohn25 if wohn25!=.
-replace wohnc5= wohn45 if wohn45!=.
-replace wohnc5= wohn55 if wohn55!=.
-replace wohnc5= wohn65 if wohn65!=.
-
+replace wohnc5= wohn55 if wohn55!=. & wave5to6_c5 == 1
 lab def wohnc5 0"No" 1"Yes"
-lab var wohnc5 "Child 5: Currently living at parents` home"
+lab var wohnc5 "Child 5: Living at parents` home"
 lab val wohnc5 wohnc5
 
 * Kind 6
 gen wohnc6=.
-replace wohnc6= wohn16 if wohn16!=. 
-replace wohnc6= wohn26 if wohn26!=.
-replace wohnc6= wohn46 if wohn46!=.
-replace wohnc6= wohn56 if wohn56!=.
-replace wohnc6= wohn66 if wohn66!=.
-
+replace wohnc6= wohn56 if wohn56!=. & wave5to6_c6 == 1
 lab def wohnc6 0"No" 1"Yes"
-lab var wohnc6 "Child 6: Currently living at parents` home"
+lab var wohnc6 "Child 6: Living at parents` home"
 lab val wohnc6 wohnc6
 
 * Kind 7
 gen wohnc7=.
-replace wohnc7= wohn17 if wohn17!=. 
-replace wohnc7= wohn27 if wohn27!=.
-replace wohnc7= wohn47 if wohn47!=.
-replace wohnc7= wohn57 if wohn57!=.
-replace wohnc7= wohn67 if wohn67!=.
-
+replace wohnc7= wohn57 if wohn57!=. & wave5to6_c7 == 1
 lab def wohnc7 0"No" 1"Yes"
-lab var wohnc7 "Child 7: Currently living at parents` home"
+lab var wohnc7 "Child 7: Living at parents` home"
 lab val wohnc7 wohnc7
 
 * Kind 8
 gen wohnc8=.
-replace wohnc8= wohn18 if wohn18!=. 
-replace wohnc8= wohn28 if wohn28!=.
-replace wohnc8= wohn48 if wohn48!=.
-replace wohnc8= wohn58 if wohn58!=.
-replace wohnc8= wohn68 if wohn68!=.
-
+replace wohnc8= wohn58 if wohn58!=. & wave5to6_c8 == 1
 lab def wohnc8 0"No" 1"Yes"
-lab var wohnc8 "Child 8: Currently living at parents` home"
+lab var wohnc8 "Child 8: Living at parents` home"
 lab val wohnc8 wohnc8
 
-* Missing kodieren
-do $do\sharetom5.ado
-numlabel _all, add
 
-***********
-* Alle rekodieren
-recode wohn* (1/2=1) (3/9=0) (-2/-1=.)
-
-
-* Immer weg
+* Boomerang
 * Child 1
-gen away1=.
-replace away1=0 if wohnc1!=.
-replace away1=1 if ((wohn11==. | wohn11==0) & (wohn21==. | wohn21==0) & (wohn41==. | wohn41==0) & (wohn51==. | wohn51==0) & (wohn61==. | wohn61==0)) 
-replace away1=. if ch001_==. | ch001_==0
-lab def away1 0"No" 1"Yes", replace
-lab var away1 "Child 1: Never at parents`home"
-lab val away1 away1
-tab away1, m
-
-* Child 2
-gen away2=.
-replace away2=0 if wohnc2!=.
-replace away2=1 if ((wohn12==. | wohn12==0) & (wohn22==. | wohn22==0) & (wohn42==. | wohn42==0) & (wohn52==. | wohn52==0) & (wohn62==. | wohn62==0)) 
-replace away2=. if ch001_<2  | ch001_==.
-lab var away2 "Child 2: Never at parents`home"
-lab val away2 away1
-
-* Child 3
-gen away3=.
-replace away3=0 if wohnc3!=.
-replace away3=1 if ((wohn13==. | wohn13==0) & (wohn23==. | wohn23==0) & (wohn43==. | wohn43==0) & (wohn53==. | wohn53==0) & (wohn63==. | wohn63==0)) 
-replace away3=. if ch001_<3 | ch001_==.
-lab var away3 "Child 3: Never at parents`home"
-lab val away3 away1
-
-* Child 4
-gen away4=.
-replace away4=0 if wohnc4!=.
-replace away4=1 if ((wohn14==. | wohn14==0) & (wohn24==. | wohn24==0) & (wohn44==. | wohn44==0) & (wohn54==. | wohn54==0) & (wohn64==. | wohn64==0)) 
-replace away4=. if ch001_<4 | ch001_==.
-lab var away4 "Child 4: Never at parents`home"
-lab val away4 away1
-
-* Child 5
-gen away5=.
-replace away5=0 if wohnc5!=.
-replace away5=1 if ((wohn15==. | wohn15==0) & (wohn25==. | wohn25==0) & (wohn45==. | wohn45==0) & (wohn55==. | wohn55==0) & (wohn65==. | wohn65==0)) 
-replace away5=. if ch001_<5 | ch001_==.
-lab var away5 "Child 5: Never at parents`home"
-lab val away5 away1
-
-* Child 6
-gen away6=.
-replace away6=0 if wohnc6!=.
-replace away6=1 if ((wohn16==. | wohn16==0) & (wohn26==. | wohn26==0) & (wohn46==. | wohn46==0) & (wohn56==. | wohn56==0) & (wohn66==. | wohn66==0)) 
-replace away6=. if ch001_<6 | ch001_==.
-lab var away6 "Child 6: Never at parents`home"
-lab val away6 away1
-
-* Child 7
-gen away7=.
-replace away7=0 if wohnc7!=.
-replace away7=1 if ((wohn17==. | wohn17==0) & (wohn27==. | wohn27==0) & (wohn47==. | wohn47==0) & (wohn57==. | wohn57==0) & (wohn67==. | wohn67==0)) 
-replace away7=. if ch001_<7 | ch001_==.
-lab var away7 "Child 7: Never at parents`home"
-lab val away7 away1
-
-* Child 8
-gen away8=.
-replace away8=0 if wohnc8!=.
-replace away8=1 if ((wohn18==. | wohn18==0) & (wohn28==. | wohn28==0) & (wohn48==. | wohn48==0) & (wohn58==. | wohn58==0) & (wohn68==. | wohn68==0)) 
-replace away8=. if ch001_<8 | ch001_==.
-lab var away8 "Child 8: Never at parents`home"
-lab val away8 away1
-
-
-
-*Nesthocker
-*Child 1
-gen nest1=.
-replace nest1=0 if wohnc1!=.
-replace nest1=1 if ((wohn11==. | wohn11==1) & (wohn21==. | wohn21==1) & (wohn41==. | wohn41==1) & (wohn51==. | wohn51==1) & (wohn61==. | wohn61==1)) 
-replace nest1=. if ch001_==. | ch001_==0
-lab def nest1 0"No" 1"Yes"
-lab var nest1 "Child 1: Always at parents' home"
-lab val nest1 nest1
-
-*Child 2
-gen nest2=.
-replace nest2=0 if wohnc2!=.
-replace nest2=1 if ((wohn12==. | wohn12==1) & (wohn22==. | wohn22==1) & (wohn42==. | wohn42==1) & (wohn52==. | wohn52==1) & (wohn62==. | wohn62==1)) 
-replace nest2=. if ch001_<2 | ch001_==.
-lab var nest2 "Child 2: Always at parents' home"
-lab val nest2 nest1
-
-*Child 3
-gen nest3=.
-replace nest3=0 if wohnc3!=.
-replace nest3=1 if ((wohn13==. | wohn13==1) & (wohn23==. | wohn23==1) & (wohn43==. | wohn43==1) & (wohn53==. | wohn53==1) & (wohn63==. | wohn63==1)) 
-replace nest3=. if ch001_<3 | ch001_==.
-lab var nest3 "Child 3: Always at parents' home"
-lab val nest3 nest1
-
-*Child 4
-gen nest4=.
-replace nest4=0 if wohnc4!=.
-replace nest4=1 if ((wohn14==. | wohn14==1) & (wohn24==. | wohn24==1) & (wohn44==. | wohn44==1) & (wohn54==. | wohn54==1) & (wohn64==. | wohn64==1)) 
-replace nest4=. if ch001_<4 | ch001_==.
-lab var nest4 "Child 4: Always at parents' home"
-lab val nest4 nest1
-
-*Child 5
-gen nest5=.
-replace nest5=0 if wohnc5!=.
-replace nest5=1 if ((wohn15==. | wohn15==1) & (wohn25==. | wohn25==1) & (wohn45==. | wohn45==1) & (wohn55==. | wohn55==1) & (wohn65==. | wohn65==1)) 
-replace nest5=. if ch001_<5 | ch001_==.
-lab var nest5 "Child 5: Always at parents' home"
-lab val nest5 nest1
-
-*Child 6
-gen nest6=.
-replace nest6=0 if wohnc6!=.
-replace nest6=1 if ((wohn16==. | wohn16==1) & (wohn26==. | wohn26==1) & (wohn46==. | wohn46==1) & (wohn56==. | wohn56==1) & (wohn66==. | wohn66==1)) 
-replace nest6=. if ch001_<6 | ch001_==.
-lab var nest6 "Child 6: Always at parents' home"
-lab val nest6 nest1
-
-*Child 7
-gen nest7=.
-replace nest7=0 if wohnc7!=.
-replace nest7=1 if ((wohn17==. | wohn17==1) & (wohn27==. | wohn27==1) & (wohn47==. | wohn47==1) & (wohn57==. | wohn57==1) & (wohn67==. | wohn67==1)) 
-replace nest7=. if ch001_<7 | ch001_==.
-lab var nest7 "Child 7: Always at parents' home"
-lab val nest7 nest1
-
-*Child 8
-gen nest8=.
-replace nest8=0 if wohnc8!=.
-replace nest8=1 if ((wohn18==. | wohn18==1) & (wohn28==. | wohn28==1) & (wohn48==. | wohn48==1) & (wohn58==. | wohn58==1) & (wohn68==. | wohn68==1)) 
-replace nest8=. if ch001_<8 | ch001_==.
-lab var nest8 "Child 8: Always at parents' home"
-lab val nest8 nest1
-
-* Boomerang 
-*Child 1
-gen boom1=.
+gen boom1 = . 
 replace boom1=0 if wohnc1!=.
-replace boom1=1 if ((wohn61==1) & (wohn51==0 | wohn41==0 | wohn21==0 | wohn11==0))
+replace boom1=1 if ((wohn61==1) & (wohnc1==0))
 lab def boom1 0 "No" 1"Yes", replace
 lab var boom1 "Child 1: Boomerang"
 lab val boom1 boom1
 tab boom1, m
 
-*Child 2
-gen boom2=.
-replace boom2=0 if wohnc2!=.
-replace boom2=1 if ((wohn62==1) & (wohn52==0 | wohn42==0 | wohn22==0 | wohn12==0))
-lab var boom2 "Child 2: Boomerang"
-lab val boom2 boom1
+************ Wann anders fortfÃ¼hren!! ****************
 
-*Child 3
-gen boom3=.
-replace boom3=0 if wohnc3!=.
-replace boom3=1 if ((wohn63==1) & (wohn53==0 | wohn43==0 | wohn23==0 | wohn13==0))
-lab var boom3 "Child 3: Boomerang"
-lab val boom3 boom1
 
-*Child 4
-gen boom4=.
-replace boom4=0 if wohnc4!=.
-replace boom4=1 if ((wohn64==1) & (wohn54==0 | wohn44==0 | wohn24==0 | wohn14==0))
-lab var boom4 "Child 4: Boomerang"
-lab val boom4 boom1
 
-*Child 5
-gen boom5=.
-replace boom5=0 if wohnc5!=.
-replace boom5=1 if ((wohn65==1) & (wohn55==0 | wohn45==0 | wohn25==0 | wohn15==0))
-lab var boom5 "Child 5: Boomerang"
-lab val boom5 boom1
+* Move out
+* Child 1
+gen move1 = . 
+replace move1=0 if wohnc1!=.
+replace move1=1 if ((wohn61==0) & (wohnc1==1))
+lab def move1 0 "No" 1"Yes", replace
+lab var move1 "Child 1: Moved out"
+lab val move1 move1
+tab move1, m
 
-*Child 6
-gen boom6=.
-replace boom6=0 if wohnc6!=.
-replace boom6=1 if ((wohn66==1) & (wohn56==0 | wohn46==0 | wohn26==0 | wohn16==0))
-lab var boom6 "Child 6: Boomerang"
-lab val boom6 boom1
 
-*Child 7
-gen boom7=.
-replace boom7=0 if wohnc7!=.
-replace boom7=1 if ((wohn67==1) & (wohn57==0 | wohn47==0 | wohn27==0 | wohn17==0))
-lab var boom7 "Child 7: Boomerang"
-lab val boom7 boom1
 
-*Child 8
-gen boom8=.
-replace boom8=0 if wohnc8!=.
-replace boom8=1 if ((wohn68==1) & (wohn58==0 | wohn48==0 | wohn28==0 | wohn18==0))
-lab var boom8 "Child 8: Boomerang"
-lab val boom8 boom1
+************ Wann anders fortfÃ¼hren!! ****************
 
-drop wohn1* wohn2* wohn4* wohn5* wohn6* mer1 mer2 mer4 mer5 ch001_
+
+
+* Missing kodieren
+do $do\sharetom5.ado
+numlabel _all, add
+
+
+
+
+
+
 
 saveold $out\wohnort.dta, replace  
 
@@ -369,7 +245,7 @@ saveold $out\wohnort.dta, replace
 ** Kinderdatensatz Welle 6 
 use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_ch.dta, clear
 sort mergeid
-keep mergeid coupleid6 hhid6 ch001_ ch005_1-ch005_8  ch006_1-ch006_8 /*
+keep mergeid coupleid6 hhid6 ch001_ ch005_1-ch005_8  ch006_1-ch006_8 ch007_1-ch007_8 /*
 */ ch012_1-ch012_8 ch013_1-ch013_8 /*
 */ ch014_1-ch014_8 ch015_1-ch015_8 ch016_1-ch016_8 ch019_1-ch019_8 /*
 */ ch102_1-ch102_8 ch103_1-ch103_8 ch104_1-ch104_8 ch105_1-ch105_8 ch106_1-ch106_8 /*
@@ -406,7 +282,7 @@ label value nKind nKind
 recode nKind (-2/-1=.)
 tab nKind, m
 
-* nur Haushalte behalten, die überhaupt Kinder haben
+* nur Haushalte behalten, die Ã¼berhaupt Kinder haben
 keep if nKind>0
 drop if nKind==.
 tab nKind, m
@@ -431,14 +307,14 @@ label val var* var
 gen nkidshome= var1 + var2 + var3 + var4 + var5 + var6 + var7 + var8
 drop var*
 
-* Doppelte Fälle raus
+* Doppelte FÃ¤lle raus
 sort hhid6
 quietly by hhid6: gen dup= cond(_N==1,0,_n)
 tab dup
 keep if dup<2
 drop dup
 
-*speichern im Haushaltsformat (für andere Datenteile)
+*speichern im Haushaltsformat (fÃ¼r andere Datenteile)
 saveold $out\HHchild.dta, replace  
 
 
@@ -462,7 +338,7 @@ tab Kzahl, m
 expand Kzahl
 drop Kzahl
 
-* Spell für Kinder
+* Spell fÃ¼r Kinder
 bysort mergeid: gen Kspell= _n
 
 drop if Kspell >8

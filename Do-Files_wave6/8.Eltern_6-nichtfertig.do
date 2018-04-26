@@ -2,7 +2,7 @@
 ******* Datenmanagement *******
 ********** Parents ************
 
-version 13
+version 14
 clear all
 set more off, perm
 set linesize 80
@@ -10,14 +10,15 @@ capture log close
 
 
 * Master Do-File
-do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
+* do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
+do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
 
 // Personenebene
 do $do\4.DM_6.do
 do $do\5.ISCED_6.do 
 do $do\2.CH_6.do
 
-// dazu für Partner in HH, HH-Größe
+// dazu fÃ¼r Partner in HH, HH-GrÃ¶ÃŸe
 do $do\3.CV_6.do
 
 // Haushaltsebene
@@ -37,12 +38,12 @@ keep if dup==0
 drop dup
 
 * Auf Haushaltsebene umstrukturieren (so, dass Elterninfos in gleichem Spell)
-* 1= Väter, 2=Mütter
+* 1= VÃ¤ter, 2=MÃ¼tter
 *sort hhid6 mergeid
 *drop mergeid mergeidp6 coupleid6 omacoh
 *reshape wide alter migr fborn fcit isced_p casp subges Emar int_year hosnight, i(hhid6) j(eltern)
 
-* hier neu nur für poster
+* hier neu nur fÃ¼r poster
 drop mergeid mergeidp6 coupleid6 dn044_
 reshape wide alter migr fborn fcit isced_p Emar int_year, i(hhid6) j(eltern)
 

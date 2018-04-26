@@ -2,7 +2,7 @@
 ******* Datenmanagement *******
 ******** Coverscreen **********
 
-version 13
+version 14
 clear all
 set more off, perm
 set linesize 80
@@ -10,7 +10,9 @@ capture log close
 
 
 * Master Do-File
-do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
+*do "C:\Users\Julia\Documents\Studium\M.A.Soziologie\5.Semester\Masterarbeit\Methods-Publikation\Do-Files\1.Master.do"
+do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
+
 
 use $SHARE\sharew6_rel6-1-0_ALL_datasets_stata/sharew6_rel6-1-0_cv_r.dta, clear
 
@@ -20,7 +22,7 @@ keep mergeid hhsize hhid6 cvresp relrpers deceased
 drop if deceased==1
 drop deceased
 
-* neue Variable für Partner im HH
+* neue Variable fÃ¼r Partner im HH
 gen spouse=.
 replace spouse=1 if relrpers==1 | relrpers==2 |  relrpers==11
 tab spouse
