@@ -38,12 +38,10 @@ keep if dup==0
 drop dup
 
 * Auf Haushaltsebene umstrukturieren (so, dass Elterninfos in gleichem Spell)
-* 1= VÃ¤ter, 2=MÃ¼tter
+* 1= VÃter, 2=Mütter
 sort hhid6 mergeid
 drop mergeid mergeidp6 coupleid6 _merge dn004_ dn007_ dn040_
 reshape wide alter migr cit birth isced_p Emar int_year partnerinhh, i(hhid6) j(eltern)
-
-
 
 * Support dazu
 merge 1:1 hhid6 using $out\Support.dta, gen(supp_m)
@@ -84,7 +82,6 @@ label val parmar parmar
 // geht so nicht! Missings sind singles
 
 
-
 * Alter Durchschnitt (wenn Paar)
 gen xalter=.
 replace xalter=(alter1 + alter2)/2 if partner==1
@@ -97,33 +94,18 @@ label var xalter "Average age parents"
 tab xalter, m
 
 
-* Bildung Durchschnitt (Vater trotzdem behalten)
-gen xisced=.
-replace xisced= (isced_p1 + isced_p2)/2 if partner==1
-replace xisced= isced_p1 if isced_p2==. & partner==0
-replace xisced= isced_p2 if isced_p1==. & partner==0
-recode xisced (0=.) (0.5=1) (1.5=2) (2.5=3) (3.5=4) (4.5=5)
-label var xisced "Average ISCED parents"
-label val xisced K_educ
-recode xisced (.=6)
-label def xisced 6 "level of education unknown" 1 "(pre-) primary education" /*
-*/2 "lower secundary education" /*
-*/ 3 "upper secondary education" 4 "post-secondary non-tertiary education" /*
-*/ 5 "tertiary education", replace
-label val xisced xisced
-tab xisced
-
-*gen pisced=isced_p1
-*recode pisced (.=6) (0=6)
-
-*gen misced=isced_p2
-*recode misced (.=6) (0=6)
-
-
 label var isced_p1 "Educational level father"
+label var isced_p2 "Educational level mother"
+lab val isced_p1 isced_p1
+lab val isced_p2 isced_p2
 
-* Migrationsstatus
-* migr birth cit je 1 &2 
+
+* Migrationshintergrund
+tab migr1, m
+lab var migr1 "Migration background father"
+lab val migr1 migr1
+lab var migr2 "Migration background mother"
+lab val migr2 migr2
 
 
 * Einkommen Eltern

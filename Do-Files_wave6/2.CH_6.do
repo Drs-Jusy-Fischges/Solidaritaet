@@ -499,48 +499,48 @@ label var Countkids "Anzahl Kinder in Elternhaushalt gesamt (inkl. cohab ya's)"
 *label var otherkids "Anzahl anderer Kinder in Elternhaushalt (ohne beobachteter ya's, wenn cohab)" 
 *tab otherkids, m
 
-// Unter 18-Jährige bei Eltern
+// Unter 20-Jährige bei Eltern
 gen Kid_1=.
-replace Kid_1=1 if Ch0715_1==1 & (int_year - ch006_1<18)
+replace Kid_1=1 if Ch0715_1==1 & (int_year - ch006_1<19)
 gen Kid_2=.
-replace Kid_2=1 if Ch0715_2==1 & (int_year - ch006_2<18)
+replace Kid_2=1 if Ch0715_2==1 & (int_year - ch006_2<19)
 gen Kid_3=.
-replace Kid_3=1 if Ch0715_3==1 & (int_year - ch006_3<18)
+replace Kid_3=1 if Ch0715_3==1 & (int_year - ch006_3<19)
 gen Kid_4=.
-replace Kid_4=1 if Ch0715_4==1 & (int_year - ch006_4<18)
+replace Kid_4=1 if Ch0715_4==1 & (int_year - ch006_4<19)
 gen Kid_5=.
-replace Kid_5=1 if Ch0715_5==1 & (int_year - ch006_5<18)
+replace Kid_5=1 if Ch0715_5==1 & (int_year - ch006_5<19)
 gen Kid_6=.
-replace Kid_6=1 if Ch0715_6==1 & (int_year - ch006_6<18)
+replace Kid_6=1 if Ch0715_6==1 & (int_year - ch006_6<19)
 gen Kid_7=.
-replace Kid_7=1 if Ch0715_7==1 & (int_year - ch006_7<18)
+replace Kid_7=1 if Ch0715_7==1 & (int_year - ch006_7<19)
 gen Kid_8=.
-replace Kid_8=1 if Ch0715_8==1 & (int_year - ch006_8<18)
+replace Kid_8=1 if Ch0715_8==1 & (int_year - ch006_8<19)
 
 egen Countbaby=rowtotal(Kid_1 - Kid_8)
-label var Countbaby "Children up to age 17 at home"
+label var Countbaby "Children up to age 18 at home"
 tab Countbaby, m
 
 // andere Young Adults
 gen ya_1=.
-replace ya_1=1 if Ch0715_1==1 & (int_year - ch006_1>19) & (int_year - ch006_1<40)
+replace ya_1=1 if Ch0715_1==1 & (int_year - ch006_1>19) & (int_year - ch006_1<36)
 gen ya_2=.
-replace ya_2=1 if Ch0715_1==1 & (int_year - ch006_2>19) & (int_year - ch006_2<40)
+replace ya_2=1 if Ch0715_1==1 & (int_year - ch006_2>19) & (int_year - ch006_2<36)
 gen ya_3=.
-replace ya_3=1 if Ch0715_1==1 & (int_year - ch006_3>19) & (int_year - ch006_3<40)
+replace ya_3=1 if Ch0715_1==1 & (int_year - ch006_3>19) & (int_year - ch006_3<36)
 gen ya_4=.
-replace ya_4=1 if Ch0715_1==1 & (int_year - ch006_4>19) & (int_year - ch006_4<40)
+replace ya_4=1 if Ch0715_1==1 & (int_year - ch006_4>19) & (int_year - ch006_4<36)
 gen ya_5=.
-replace ya_5=1 if Ch0715_1==1 & (int_year - ch006_5>19) & (int_year - ch006_5<40)
+replace ya_5=1 if Ch0715_1==1 & (int_year - ch006_5>19) & (int_year - ch006_5<36)
 gen ya_6=.
-replace ya_6=1 if Ch0715_1==1 & (int_year - ch006_6>19) & (int_year - ch006_6<40)
+replace ya_6=1 if Ch0715_1==1 & (int_year - ch006_6>19) & (int_year - ch006_6<36)
 gen ya_7=.
-replace ya_7=1 if Ch0715_1==1 & (int_year - ch006_7>19) & (int_year - ch006_7<40)
+replace ya_7=1 if Ch0715_1==1 & (int_year - ch006_7>19) & (int_year - ch006_7<36)
 gen ya_8=.
-replace ya_8=1 if Ch0715_1==1 & (int_year - ch006_8>19) & (int_year - ch006_8<40)
+replace ya_8=1 if Ch0715_1==1 & (int_year - ch006_8>19) & (int_year - ch006_8<36)
 
 egen Countya=rowtotal(ya_1 - ya_8)
-label var Countya "All Children 20-39 at home"
+label var Countya "All Children 20-35 at home"
 tab Countya, m
 
 gen otherya= Countya

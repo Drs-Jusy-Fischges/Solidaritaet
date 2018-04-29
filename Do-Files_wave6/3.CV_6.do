@@ -36,6 +36,16 @@ drop spouse
 * Korrektur HHsize
 recode hhsize (0=1) // damit keine leeren Haushalte mehr (Tote sind ja weg)
 
+*neue Var für Kind im HH
+gen child=.
+replace child=1 if relrpers==3
+tab child
+
+egen Khome = count(child), by(hhid6)
+tab Khome, m
+label var Khome "Anzahl Kinder, die im HH leben"
+drop child
+
 * Missing kodieren 
 do $do\sharetom5.ado
 numlabel _all, add

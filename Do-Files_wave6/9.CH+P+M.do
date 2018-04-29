@@ -32,44 +32,46 @@ merge m:1 hhid6 using $out\Eltern.dta, gen(chp_merge)
 keep if chp_merge==3
 
 numlabel _all, add
-
 drop coupleid6
-/*
-*Support
-gen octime=0
-replace octime= (chtime1 + chtime2)- (c1time1 + c1time2) if Kspell==1
-replace octime= (chtime1 + chtime2)- (c2time1 + c2time2) if Kspell==2
-replace octime= (chtime1 + chtime2)- (c3time1 + c3time2) if Kspell==3
-replace octime= (chtime1 + chtime2)- (c4time1 + c4time2) if Kspell==4
-replace octime= (chtime1 + chtime2)- (c5time1 + c5time2) if Kspell==5
-replace octime= (chtime1 + chtime2)- (c6time1 + c6time2) if Kspell==6
-replace octime= (chtime1 + chtime2)- (c7time1 + c7time2) if Kspell==7
-replace octime= (chtime1 + chtime2)- (c8time1 + c8time2) if Kspell==8
-recode octime (0=.)
 
-drop chtime* c1time* c2time* c3time* c4time* c5time* c6time* c7time* c8time*
+** Support operationalisieren
+tab1 freqc11 helpc11, m
 
-replace octime= octime/nk_away // damit mehr Kinder nicht mehr Support
-recode octime (.=0)
-label var octime "Support for children"
-tab octime, m
+* erstmal die Missings auf 0
+foreach var of varlist helpc11 - freqc32 {
+recode `var' (.=0)
+}
+*
 
-*/
-*** Kinder Wohnort
-*replace Kcohab=0 if Kmar==1 // wenn verheiratet und zusammenlebend, dann nicht mit Eltern
-*replace Kcohab=1 if Kwohn==1 | Kwohn==2
-*replace Kcohab=0 if Kwohn==3 | Kwohn==4 | Kwohn==5
-*tab Kcohab, m
+* Kinderindentifikation für Hilfe auf 0 wenn untersuchter YA betroffen
+order helpc11 helpc12 helpc21 helpc22 helpc31 helpc32 freqc11 freqc12 freqc21 freqc22 freqc31 freqc32
+foreach var of varlist helpc11 - helpc31 {
+replace `var'=0 if `var'==Kspell
+}
+* dann freq auch auf 0
+replace freqc11=0 if helpc11==0
+replace freqc12=0 if helpc12==0
+replace freqc21=0 if helpc21==0
+replace freqc22=0 if helpc22==0
+replace freqc31=0 if helpc31==0
+replace freqc32=0 if helpc32==0
 
-*** Variable fÃ¼r andere Kinder zuhause
+// jetzt haben nur noch die Geschwister Werte, man slebst zählt nicht mit!
+
+
+
+
+
+
+*** Variable für andere Kinder zuhause
 // egal welches Alter
-*tab Khome
-*gen chilhome=Khome
-*replace chilhome = Khome -1 if Kcohab ==1
-*label var chilhome "(Other) children in parents households (all ages)"
-*tab chilhome, m
+tab Khome
+gen chilhome=Khome
+replace chilhome = Khome -1 if Kcohab ==1
+label var chilhome "(Other) children in parents households (all ages)"
+tab chilhome, m
 
-*tab Countkids // Gesamtzahl Kinder in Haushalt
+tab Countkids // Gesamtzahl Kinder in Haushalt
 
 * Anzahl Kinder nicht zu hause
 *gen kidsout= nKind -Countkids
@@ -78,18 +80,13 @@ tab octime, m
 
 
 // nur young adults
-*tab Countya, m
+tab Countya, m
 
 // nur Kinder
-*tab Countbaby, m
+tab Countbaby, m
 
 // nur 40+ Kinder
 *tab Countold, m
-
-********************
-***Variablen droppen
-********************
-drop fam_resp
 
 
 *******************
@@ -97,38 +94,27 @@ drop fam_resp
 *******************
 drop if Kalter < 20 | Kalter > 35 // nur Kinder 20-35 behalten
 drop if parstatus !=1 // nur leibliche Kinder behalten
-drop parstatus
 drop if Kcohab==. // keine Info Wohnort
 drop if Kjob==8 // permanently sick, disabled   
 
+********************
+***Variablen droppen
+********************
+drop fam_resp parstatus ch10* ch30* wohn* ch5* year* ya* cvres chp_mer relpers int_year2 alter1 alter2 
 
-/* Eltern
-recode Famhome (2/6=2)
-label def Famhome 0"no family" 1"1 family member" 2"2+ family members"
-label val Famhome Famhome
+*recode otherya (2/5=2)
+*label def otherya 0 "no other ya" 1 "1 other ya" 2 "2+ other ya" 
+*label val otherya otherya
 
-recode Countold (1/4=1)
-label def Countold 1 "40+ cohabitating"
-label val Countold Countold
+*recode Countbaby (2/4=2)
+*label def Countbaby 0"no under 20" 1 "1 under 20" 2 "2+ under 20"
+*label val Countbaby Countbaby
 
-recode otherya (2/5=2)
-label def otherya 0 "no other ya" 1 "1 other ya" 2 "2+ other ya" 
-label val otherya otherya
-
-recode Countbaby (2/4=2)
-label def Countbaby 0"no under 20" 1 "1 under 20" 2 "2+ under 20"
-label val Countbaby Countbaby
-
-recode Omps (1/3=1)
-label def Omps 0 "no Omps " 1 "Omps"
-label val Omps Omps
-
-*/
 ******************
 *** Macro 
 ******************
 
-merge m:1 country using $out\macro.dta, gen(macro_m)
+* merge m:1 country using $out\macro.dta, gen(macro_m)
 
 
 
