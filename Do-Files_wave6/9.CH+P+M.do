@@ -92,7 +92,7 @@ tab Countbaby, m
 *******************
 *** Fallauswahl
 *******************
-drop if Kalter < 20 | Kalter > 35 // nur Kinder 20-35 behalten
+drop if Kalter < 18 | Kalter > 35 // nur Kinder 20-35 behalten
 drop if parstatus !=1 // nur leibliche Kinder behalten
 drop if Kcohab==. // keine Info Wohnort
 drop if Kjob==8 // permanently sick, disabled   
@@ -107,7 +107,7 @@ drop fam_resp parstatus ch10* ch30* wohn* ch5* year* ya* cvres chp_mer relpers i
 *label val otherya otherya
 
 *recode Countbaby (2/4=2)
-*label def Countbaby 0"no under 20" 1 "1 under 20" 2 "2+ under 20"
+*label def Countbaby 0"no under 18" 1 "1 under 18" 2 "2+ under 18"
 *label val Countbaby Countbaby
 
 ******************
