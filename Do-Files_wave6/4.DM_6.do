@@ -2,7 +2,7 @@
 ******* Datenmanagement *******
 ******** Demographics *********
 
-version 14
+version 13.1
 clear all
 set more off, perm
 set linesize 80
@@ -23,7 +23,7 @@ keep mergeid mstat implicat
 * Datensatz umformen
 reshape wide mstat,j(implicat) i(mergeid)
 
-* Modus über 5 Variablen berechnen
+/* Modus über 5 Variablen berechnen
 
 gen foo = . 
 gen mode = . 

@@ -10,14 +10,14 @@ capture log close
 
 
 * Master Do-File
-do "C:\Users\Julia\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do" 
-*do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
+*do "C:\Users\Julia\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do" 
+do "C:\Users\Isy\Documents\GitHub\Solidaritaet\Do-Files_wave6\1.Master.do"
 
 * LOG-Datei
 capture log close
 log using $log\Parents.log, replace
 
-do $do\8.Eltern_6-nichtfertig.do
+do $do\8.Eltern_6.do
 
 *do $do\10.Macro.do // falsche Jahre
 
@@ -100,7 +100,7 @@ drop if Kjob==8 // permanently sick, disabled
 ********************
 ***Variablen droppen
 ********************
-drop fam_resp parstatus ch10* ch30* wohn* ch5* year* ya* cvres chp_mer relpers int_year2 alter1 alter2 
+drop fam_resp parstatus ch10* ch30* wohn* ch5* year* ya* cvres chp_mer int_year2 alter1 alter2 
 
 *recode otherya (2/5=2)
 *label def otherya 0 "no other ya" 1 "1 other ya" 2 "2+ other ya" 
