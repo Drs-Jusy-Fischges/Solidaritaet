@@ -56,10 +56,39 @@ replace freqc22=0 if helpc22==0
 replace freqc31=0 if helpc31==0
 replace freqc32=0 if helpc32==0
 
-// jetzt haben nur noch die Geschwister Werte, man slebst zählt nicht mit!
+// jetzt haben nur noch die Geschwister Werte, man selbst zählt nicht mit!
+
+* Collapse categories
+foreach var of varlist freqc11-freqc32 {
+recode `var' (3 4 = 1) (1 2 = 2)
+label def `var' 0 "Not at all" 1 "Rarely" 2 "Regularly"
+label value `var' `var'
+}
+*
+
+* Rename vars
+label var freqc11 "First mentioned child support frequency - father" 
+label var freqc12 "First mentioned child support frequency - mother"
+label var freqc21 "Second mentioned child support frequency - father"
+label var freqc22 "Second mentioned child support frequency - mother"
+label var freqc31 "Third mentioned child support frequency - father"
+label var freqc32 "Third mentioned child support frequency - mother"
 
 
+/* Percentage of children supported
+* 3 Nennungen
 
+sup_prct=.
+
+*/
+
+
+* Categorical variable support per family
+gen support = .
+replace support = 0 if helpc11 == 0 & helpc12 == 0 & helpc21 == 0 & helpc22 == 0 & helpc31 == 0 & helpc32 == 0 // no one supports
+replace support = 1 if (helpc11 != 0 | helpc21 != 0 | helpc31 != 0 | helpc12 !=0 | helpc22 !=0 | helpc32 != 0) // one parent supports (at this stage, also two parents)
+replace support = 2 if ((helpc11 != 0 | helpc21 != 0 | helpc31 != 0) & (helpc12 !=0 | helpc22 !=0 | helpc32 != 0)) // two parents support
+label var support "Sibling of YA - supported"
 
 
 
